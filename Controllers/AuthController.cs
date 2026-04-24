@@ -2,13 +2,21 @@
 using Orcamento.Data;
 using Orcamento.Models;
 using BCrypt.Net;
+using Orcamento.Services;
 
 namespace Orcamento.Controllers
 {
-        [ApiController]
-        [Route("auth")]
+     [ApiController]
+     [Route("auth")]
      public class AuthController : ControllerBase
      {
+        private readonly TokenService _tokenService;
+
+        public AuthController(TokenService tokenService)
+        {
+            _tokenService = tokenService;
+        }
+
         [HttpPost("register")]
         public IActionResult Register([FromBody] RegisterDto dto)
         {
@@ -51,7 +59,13 @@ namespace Orcamento.Controllers
                 return Unauthorized("Credenciais inválidas");
             }
 
-            return Ok("Login válido");
+            var token = _tokenService.GenerateToken(user);
+
+            return Ok(new
+            {
+                //usuario = user,
+                token = token
+            });
         }
     }
 }
