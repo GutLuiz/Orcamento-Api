@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "2dI/d4bM3UY=",
+  "success": true,
+  "projectFilePath": "D:\\projetos pessoais\\Orcamento\\orcamento\\Orcamento.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\luizg\\.nuget\\packages\\bcrypt.net-next\\4.1.0\\bcrypt.net-next.4.1.0.nupkg.sha512",
+    "C:\\Users\\luizg\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.6\\microsoft.aspnetcore.openapi.10.0.6.nupkg.sha512",
+    "C:\\Users\\luizg\\.nuget\\packages\\microsoft.openapi\\2.0.0\\microsoft.openapi.2.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
