@@ -12,21 +12,22 @@ namespace Orcamento.Controllers
      {
         private readonly TokenService _tokenService;
 
-        public AuthController(TokenService tokenService)
+        private readonly AppDbContext _context;
+
+        public AuthController(TokenService tokenService, AppDbContext context)
         {
             _tokenService = tokenService;
+            _context = context;
         }
 
         [HttpPost("register")]
         public IActionResult Register([FromBody] RegisterDto dto)
         {
-            var existingUser = InMemoryDb.Users
+            var existingUser = _context.Users
                 .FirstOrDefault(u => u.Email == dto.Email);
 
             if (existingUser != null)
-            {
                 return BadRequest("Usuário já existe");
-            }
 
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
 
@@ -36,7 +37,8 @@ namespace Orcamento.Controllers
                 PasswordHash = passwordHash
             };
 
-            InMemoryDb.Users.Add(user);
+            _context.Users.Add(user);
+            _context.SaveChanges();
 
             return Ok("Usuário criado");
         }
@@ -44,26 +46,21 @@ namespace Orcamento.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginDto dto)
         {
-            var user = InMemoryDb.Users
+            var user = _context.Users
                 .FirstOrDefault(u => u.Email == dto.Email);
 
             if (user == null)
-            {
                 return Unauthorized("Credenciais inválidas");
-            }
 
             var validPassword = BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash);
 
             if (!validPassword)
-            {
                 return Unauthorized("Credenciais inválidas");
-            }
 
             var token = _tokenService.GenerateToken(user);
 
             return Ok(new
             {
-                //usuario = user,
                 token = token
             });
         }

@@ -13,11 +13,11 @@ namespace Orcamento.Controllers
         [Authorize]
         public IActionResult GetMe()
         {
-            var email = User.FindFirst(ClaimTypes.Name)?.Value;
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             return Ok(new
             {
-                email = email
+                user = userId
             });
         }
     }
