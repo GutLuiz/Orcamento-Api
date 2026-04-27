@@ -1,10 +1,13 @@
-﻿namespace Orcamento.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Orcamento.Models
 {
     public class Category
     {
         public int Id { get; set; }
 
-        public string Name { get; set; } = string.Empty;
+        [Required]
+        public string Name { get; set; } = null;
 
         public int UserId { get; set; }
         public User ? User { get; set; }

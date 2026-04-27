@@ -14,6 +14,7 @@ namespace Orcamento.Controllers
     {
         // aqui eu chamo meu banco e seu contexto, ond tem os moldais para buscar as "tabelas".
         private readonly AppDbContext _context;
+        
 
         public CategoryController(AppDbContext context)
         {
@@ -48,6 +49,42 @@ namespace Orcamento.Controllers
                 .ToList();
 
             return Ok(categories);
+        }
+        [HttpDelete("{id}")]
+        public IActionResult Remove(int id)
+        {
+            // instacia o id do corpo de categoria e fala que o parametro tem o mesmo valor
+            var category = new Category { Id = id };
+
+            // acha esse id no banco e remove dps salva
+            _context.Categories.Attach(category);
+            _context.Categories.Remove(category);
+            _context.SaveChanges();
+
+            return NoContent();
+        }
+        [HttpPut("{id}")]
+        public IActionResult Update(int id, Category updatedCategory)
+        {
+            // se os ids n baterem
+            if (id != updatedCategory.Id)
+            {
+                return BadRequest();
+            }
+                
+            // acha o id que passei no parametro
+            var category = _context.Categories.Find(id);
+
+            if (category == null)
+            {
+                return NotFound();
+            }
+                
+            // atualizo dps salvo
+            category.Name = updatedCategory.Name;
+            _context.SaveChanges();
+
+            return NoContent();
         }
     }
 }
