@@ -64,24 +64,17 @@ namespace Orcamento.Controllers
             return NoContent();
         }
         [HttpPut("{id}")]
-        public IActionResult Update(int id, Category updatedCategory)
+        public IActionResult Update(int id, [FromBody] Category updatedCategory)
         {
-            // se os ids n baterem
-            if (id != updatedCategory.Id)
-            {
-                return BadRequest();
-            }
-                
-            // acha o id que passei no parametro
             var category = _context.Categories.Find(id);
 
             if (category == null)
             {
                 return NotFound();
             }
-                
-            // atualizo dps salvo
+
             category.Name = updatedCategory.Name;
+
             _context.SaveChanges();
 
             return NoContent();
