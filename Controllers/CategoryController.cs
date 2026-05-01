@@ -50,6 +50,7 @@ namespace Orcamento.Controllers
 
             return Ok(categories);
         }
+
         [HttpDelete("{id}")]
         public IActionResult Remove(int id)
         {
@@ -63,6 +64,7 @@ namespace Orcamento.Controllers
 
             return NoContent();
         }
+
         [HttpPut("{id}")]
         public IActionResult Update(int id, [FromBody] Category updatedCategory)
         {

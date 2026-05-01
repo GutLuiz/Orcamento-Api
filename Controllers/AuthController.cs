@@ -27,7 +27,9 @@ namespace Orcamento.Controllers
                 .FirstOrDefault(u => u.Email == dto.Email);
 
             if (existingUser != null)
+            {
                 return BadRequest("Usuário já existe");
+            }
 
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
 
@@ -50,13 +52,17 @@ namespace Orcamento.Controllers
                 .FirstOrDefault(u => u.Email == dto.Email);
 
             if (user == null)
+            {
                 return Unauthorized("Credenciais inválidas");
+            }
 
             var validPassword = BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash);
 
             if (!validPassword)
+            {
                 return Unauthorized("Credenciais inválidas");
-
+            }
+                
             var token = _tokenService.GenerateToken(user);
 
             return Ok(new
