@@ -74,33 +74,42 @@ namespace Orcamento.Controllers
             return NoContent();
         }
         [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody] Transaction updateTransaction)
+        public IActionResult Update(int id, [FromBody] Transaction updatedTransaction)
         {
-            // achar o id que eu passei no parametro
-            var trasaction = _context.Transactions.Find(id);
+            // pega o id do token
+            var userId = int.Parse(
+               User.FindFirst(ClaimTypes.NameIdentifier)!.Value
+             );
 
-            if(trasaction == null)
+            // procura transação do usuário
+            var transaction = _context.Transactions
+              .FirstOrDefault(t =>
+                  t.Id == id &&
+                  t.UserId == userId
+              );
+            if (transaction == null)
             {
                 return NotFound();
             }
-            
-            trasaction.Title = updateTransaction.Title;
-            trasaction.Amount = updateTransaction.Amount;
-            trasaction.Type = updateTransaction.Type;
-            trasaction.Date = updateTransaction.Date;
-            trasaction.CategoryId = updateTransaction.CategoryId;
 
-            if(trasaction.CategoryId == null)
+            // valida categoria
+            var category = _context.Categories
+                .FirstOrDefault(c =>
+                    c.Id == updatedTransaction.CategoryId &&
+                    c.UserId == userId
+                );
+
+            if (category == null)
             {
-                return NotFound();
+                return BadRequest("Categoria inválida");
             }
 
-            trasaction.UserId = updateTransaction.UserId;
-
-            if(trasaction.UserId == null)
-            {
-                NotFound();
-            }
+            // atualiza
+            transaction.Title = updatedTransaction.Title;
+            transaction.Amount = updatedTransaction.Amount;
+            transaction.Type = updatedTransaction.Type;
+            transaction.Date = updatedTransaction.Date;
+            transaction.CategoryId = updatedTransaction.CategoryId;
 
             _context.SaveChanges();
 
