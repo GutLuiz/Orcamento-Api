@@ -48,14 +48,22 @@ namespace Orcamento.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            // pega o id do usuario do token
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
-            // busca apenas as transacoes com esse determinado id
             var transactions = _context.Transactions
-              .Where(t => t.UserId == userId)
-              .Include(t => t.Category)
-              .ToList();
+                .Include(t => t.Category)
+                .Where(t => t.UserId == userId)
+                .Select(t => new
+                {
+                    t.Id,
+                    t.Title,
+                    t.Amount,
+                    t.Type,
+                    t.Date,
+                    t.CategoryId,
+                    CategoryName = t.Category!.Name
+                })
+                .ToList();
 
             return Ok(transactions);
         }
