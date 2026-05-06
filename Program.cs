@@ -58,6 +58,7 @@ builder.Services.AddCors(options =>
 });
 // Servicos
 builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<DashboardService>();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
