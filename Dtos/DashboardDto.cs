@@ -11,4 +11,11 @@
         public string categoria { get; set; } = "";
         public decimal valor { get; set; } = 0;
     }
+    public class ListaDto
+    {
+        public string titulo { get; set; } = "";
+        public decimal valor { get; set; } = 0;
+        public DateTime data { get; set; }
+        public string categoria { get; set; } = "";
+    }
 }

@@ -26,7 +26,7 @@ namespace Orcamento.Controllers
 
             return Ok(dados);
         }
-        [HttpGet("Graficos")]
+        [HttpGet("graficos")]
         public async Task<IActionResult> GetGraficoDashboard()
         {
             var userId = int.Parse(
@@ -34,6 +34,15 @@ namespace Orcamento.Controllers
             );
 
             var dados = await _dashboardService.BuscarValoresGrafico(userId);
+
+            return Ok(dados);
+        }
+        [HttpGet("listas")]
+        public async Task<IActionResult> GetListaDashboard()
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+            var dados = await _dashboardService.BuscarValoresLista(userId);
 
             return Ok(dados);
         }

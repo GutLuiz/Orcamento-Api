@@ -43,5 +43,19 @@ namespace Orcamento.Services
                 .Take(5)
                 .ToListAsync();
         }
+        public async Task<List<ListaDto>> BuscarValoresLista(int userId)
+        {
+            return await _context.Transactions
+                  .Where(t => t.UserId == userId)
+                  .Select(g => new ListaDto
+                  {
+                      titulo = g.Title,
+                      valor = g.Amount,
+                      data = g.Date,     categoria = g.Category.Name
+                  }).OrderByDescending(x => x.data)
+                 
+                      .Take(5)
+                      .ToListAsync();
+        }
     }
 }
