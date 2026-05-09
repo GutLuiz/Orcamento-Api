@@ -2,6 +2,7 @@
 using Orcamento.Data;
 using Orcamento.Dtos;
 using Orcamento.Models;
+using System.ComponentModel;
 
 namespace Orcamento.Services
 {
@@ -13,7 +14,7 @@ namespace Orcamento.Services
         {
             _context = context;
         }
-        public async Task<CardsDto> BuscarValores(int userId)
+        public async Task<CardsDto> BuscarValoresCards(int userId)
         {
             var receita = await _context.Transactions
                 .Where(t => t.UserId == userId && t.Type == TransactionType.Income)
@@ -29,6 +30,18 @@ namespace Orcamento.Services
                 despesa = despesa,
                 saldoAtual = receita - despesa
             };
+        }
+        public async Task<List<GraficoDto>> BuscarValoresGrafico(int userId)
+        {
+            return await _context.Transactions.Where(
+                t => t.UserId == userId).GroupBy(
+                C => C.Category.Name).Select(g => new GraficoDto
+                {
+                    categoria = g.Key,
+                    valor = g.Sum(t => t.Amount) 
+                }).OrderByDescending(x => x.valor)
+                .Take(5)
+                .ToListAsync();
         }
     }
 }

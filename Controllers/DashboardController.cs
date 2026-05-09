@@ -15,14 +15,25 @@ namespace Orcamento.Controllers
             _dashboardService = dashboardService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetDashboard()
+        [HttpGet("cards")]
+        public async Task<IActionResult> GetCardsDashboard()
         {
             var userId = int.Parse(
                 User.FindFirst(ClaimTypes.NameIdentifier)!.Value
             );
 
-            var dados = await _dashboardService.BuscarValores(userId);
+            var dados = await _dashboardService.BuscarValoresCards(userId);
+
+            return Ok(dados);
+        }
+        [HttpGet("Graficos")]
+        public async Task<IActionResult> GetGraficoDashboard()
+        {
+            var userId = int.Parse(
+                User.FindFirst(ClaimTypes.NameIdentifier)!.Value
+            );
+
+            var dados = await _dashboardService.BuscarValoresGrafico(userId);
 
             return Ok(dados);
         }
