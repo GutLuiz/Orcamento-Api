@@ -44,10 +44,18 @@ namespace Orcamento.Controllers
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
             // mostra as categorias adicionadas desse cliente fazendoo uma validacao de userId
+
             var categories = _context.Categories
                 .Where(c => c.UserId == userId)
+                .Select(c => new
+                {
+                    c.Id,
+                    c.Name,
+                    TotalMovimentado = _context.Transactions
+                        .Where(t => t.UserId == userId && t.CategoryId == c.Id)
+                        .Sum(t => (decimal?)t.Amount) ?? 0
+                })
                 .ToList();
-
             return Ok(categories);
         }
 

@@ -42,7 +42,7 @@ namespace Orcamento.Controllers
             _context.Transactions.Add(transaction);
             _context.SaveChanges();
 
-            return Ok(transaction);
+            return Ok(new { transaction.Id });
         }
 
         [HttpGet]

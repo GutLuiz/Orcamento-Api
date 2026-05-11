@@ -13,9 +13,10 @@
     }
     public class ListaDto
     {
-        public string titulo { get; set; } = "";
-        public decimal valor { get; set; } = 0;
-        public DateTime data { get; set; }
-        public string categoria { get; set; } = "";
+        public string Title { get; set; } = "";
+        public decimal amount { get; set; } = 0;
+        public DateTime date { get; set; }
+        public string categoryName { get; set; } = "";
+        public string type { get; set; } = "";
     }
 }

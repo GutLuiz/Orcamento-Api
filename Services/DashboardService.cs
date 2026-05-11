@@ -34,7 +34,7 @@ namespace Orcamento.Services
         public async Task<List<GraficoDto>> BuscarValoresGrafico(int userId)
         {
             return await _context.Transactions.Where(
-                t => t.UserId == userId).GroupBy(
+                t => t.UserId == userId && t.Type == TransactionType.Expense).GroupBy(
                 C => C.Category.Name).Select(g => new GraficoDto
                 {
                     categoria = g.Key,
@@ -49,13 +49,13 @@ namespace Orcamento.Services
                   .Where(t => t.UserId == userId)
                   .Select(g => new ListaDto
                   {
-                      titulo = g.Title,
-                      valor = g.Amount,
-                      data = g.Date,     categoria = g.Category.Name
-                  }).OrderByDescending(x => x.data)
-                 
-                      .Take(5)
-                      .ToListAsync();
+                      Title = g.Title,
+                      amount = g.Amount,
+                      date = g.Date, 
+                      categoryName = g.Category.Name,
+                  }).OrderByDescending(x => x.date)
+                    .Take(5)
+                    .ToListAsync();
         }
     }
 }
