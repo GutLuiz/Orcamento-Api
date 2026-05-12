@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Orcamento.Models
+namespace Orcamento.Dtos
 {
     public class LoginDto
     {

@@ -3,6 +3,7 @@ using Orcamento.Data;
 using Orcamento.Models;
 using BCrypt.Net;
 using Orcamento.Services;
+using Orcamento.Dtos;
 
 namespace Orcamento.Controllers
 {
@@ -14,6 +15,8 @@ namespace Orcamento.Controllers
 
         private readonly AppDbContext _context;
 
+        private readonly AuthService _authService;
+
         public AuthController(TokenService tokenService, AppDbContext context)
         {
             _tokenService = tokenService;
@@ -21,28 +24,16 @@ namespace Orcamento.Controllers
         }
 
         [HttpPost("register")]
-        public IActionResult Register([FromBody] RegisterDto dto)
+        public async Task<IActionResult> Register(RegisterDto dto)
         {
-            var existingUser = _context.Users
-                .FirstOrDefault(u => u.Email == dto.Email);
+            var usuario = await _authService.RegistrarUsuario(dto);
 
-            if (existingUser != null)
+            if (usuario == null)
             {
-                return BadRequest("Usuário já existe");
+                return BadRequest("Usuário já existe.");
             }
 
-            var passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
-
-            var user = new User
-            {
-                Email = dto.Email,
-                PasswordHash = passwordHash
-            };
-
-            _context.Users.Add(user);
-            _context.SaveChanges();
-
-            return Ok("Usuário criado");
+            return Ok("Usuário criado com sucesso.");
         }
 
         [HttpPost("login")]
