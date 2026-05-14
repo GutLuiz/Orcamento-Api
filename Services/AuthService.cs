@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Orcamento.Data;
 using Orcamento.Dtos;
 using Orcamento.Models;
+using System.Reflection;
 
 namespace Orcamento.Services
 {
@@ -43,6 +44,25 @@ namespace Orcamento.Services
 
             return user;
         }
+        public async Task<string?> LoginUsuario(LoginDto dto)
+        {
+            var usuarioExiste = await _context.Users.FirstOrDefaultAsync(t => t.Email == dto.Email);
 
+            if(usuarioExiste == null)
+            {
+                return null;
+            }
+
+            var validarPassword = BCrypt.Net.BCrypt.Verify(dto.Password, usuarioExiste.PasswordHash);
+
+            if (!validarPassword)
+            {
+                return null;
+            }
+
+            var token = _tokenService.GenerateToken(usuarioExiste);
+
+            return token;
+        }
     }
 }

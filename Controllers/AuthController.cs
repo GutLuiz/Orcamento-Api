@@ -37,29 +37,15 @@ namespace Orcamento.Controllers
         }
 
         [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginDto dto)
+        public async Task<IActionResult> Login( LoginDto dto)
         {
-            var user = _context.Users
-                .FirstOrDefault(u => u.Email == dto.Email);
+            var token = await _authService.LoginUsuario(dto);
 
-            if (user == null)
+            if(token == null)
             {
-                return Unauthorized("Credenciais inválidas");
+                return Unauthorized("Email ou senha invalidos!");
             }
-
-            var validPassword = BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash);
-
-            if (!validPassword)
-            {
-                return Unauthorized("Credenciais inválidas");
-            }
-                
-            var token = _tokenService.GenerateToken(user);
-
-            return Ok(new
-            {
-                token = token
-            });
+            return Ok(new { token = token });
         }
     }
 }
