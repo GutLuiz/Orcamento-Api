@@ -1,7 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Orcamento.Data;
-using Orcamento.Models;
-using BCrypt.Net;
 using Orcamento.Services;
 using Orcamento.Dtos;
 
@@ -11,16 +8,11 @@ namespace Orcamento.Controllers
      [Route("auth")]
      public class AuthController : ControllerBase
      {
-        private readonly TokenService _tokenService;
-
-        private readonly AppDbContext _context;
-
         private readonly AuthService _authService;
 
-        public AuthController(TokenService tokenService, AppDbContext context)
+        public AuthController(AuthService authService)
         {
-            _tokenService = tokenService;
-            _context = context;
+            _authService = authService;
         }
 
         [HttpPost("register")]
