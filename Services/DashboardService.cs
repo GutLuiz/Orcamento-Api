@@ -31,7 +31,7 @@ namespace Orcamento.Services
                 saldoAtual = receita - despesa
             };
         }
-        public async Task<List<GraficoDto>> BuscarValoresGrafico(int userId)
+        public async Task<List<GraficoDto>> BuscarValoresGraficoDespesas(int userId)
         {
             return await _context.Transactions.Where(
                 t => t.UserId == userId && t.Type == TransactionType.Expense).GroupBy(
@@ -43,6 +43,19 @@ namespace Orcamento.Services
                 .Take(5)
                 .ToListAsync();
         }
+        public async Task<List<GraficoDto>>BuscarValoresGraficoReceitas(int userId)
+        {
+            return await _context.Transactions.Where(
+                t => t.UserId == userId && t.Type == TransactionType.Income).GroupBy(
+                C => C.Category.Name).Select(g => new GraficoDto
+                {
+                    categoria = g.Key,
+                    valor = g.Sum(t => t.Amount)
+                }).OrderByDescending(x => x.valor)
+                .Take(5)
+                .ToListAsync();
+        }
+
         public async Task<List<ListaDto>> BuscarValoresLista(int userId)
         {
             return await _context.Transactions
@@ -54,7 +67,7 @@ namespace Orcamento.Services
                       date = g.Date, 
                       categoryName = g.Category.Name,
                   }).OrderByDescending(x => x.date)
-                    .Take(5)
+                    .Take(8)
                     .ToListAsync();
         }
     }

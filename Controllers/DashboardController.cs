@@ -33,9 +33,10 @@ namespace Orcamento.Controllers
                 User.FindFirst(ClaimTypes.NameIdentifier)!.Value
             );
 
-            var dados = await _dashboardService.BuscarValoresGrafico(userId);
+            var dadosDespesas = await _dashboardService.BuscarValoresGraficoDespesas(userId);
+            var dadosReceitas = await _dashboardService.BuscarValoresGraficoReceitas(userId);
 
-            return Ok(dados);
+            return Ok(new { dadosDespesas, dadosReceitas });
         }
         [HttpGet("listas")]
         public async Task<IActionResult> GetListaDashboard()
