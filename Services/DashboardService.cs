@@ -9,19 +9,28 @@ namespace Orcamento.Services
     public class DashboardService
     {
         private readonly AppDbContext _context;
+        private readonly DateTime _inicioMesAtual;
+        private readonly DateTime _hoje;
 
         public DashboardService(AppDbContext context)
         {
             _context = context;
+
+            _inicioMesAtual = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+
+            _hoje = DateTime.Now;
         }
+        
         public async Task<CardsDto> BuscarValoresCards(int userId)
         {
             var receita = await _context.Transactions
-                .Where(t => t.UserId == userId && t.Type == TransactionType.Income)
+                .Where(t => t.UserId == userId && t.Type == TransactionType.Income && 
+                    t.Date >= _inicioMesAtual)
                 .SumAsync(t => t.Amount);
 
             var despesa = await _context.Transactions
-                .Where(t => t.UserId == userId && t.Type == TransactionType.Expense)
+                .Where(t => t.UserId == userId && t.Type == TransactionType.Expense &&
+                    t.Date >= _inicioMesAtual)
                 .SumAsync(t => t.Amount);
 
             return new CardsDto
@@ -34,7 +43,8 @@ namespace Orcamento.Services
         public async Task<List<GraficoDto>> BuscarValoresGraficoDespesas(int userId)
         {
             return await _context.Transactions.Where(
-                t => t.UserId == userId && t.Type == TransactionType.Expense).GroupBy(
+                t => t.UserId == userId && t.Type == TransactionType.Expense &&
+                    t.Date >= _inicioMesAtual).GroupBy(
                 C => C.Category.Name).Select(g => new GraficoDto
                 {
                     categoria = g.Key,
@@ -46,7 +56,8 @@ namespace Orcamento.Services
         public async Task<List<GraficoDto>>BuscarValoresGraficoReceitas(int userId)
         {
             return await _context.Transactions.Where(
-                t => t.UserId == userId && t.Type == TransactionType.Income).GroupBy(
+                t => t.UserId == userId && t.Type == TransactionType.Income &&
+                    t.Date >= _inicioMesAtual).GroupBy(
                 C => C.Category.Name).Select(g => new GraficoDto
                 {
                     categoria = g.Key,
@@ -59,7 +70,8 @@ namespace Orcamento.Services
         public async Task<List<ListaDto>> BuscarValoresLista(int userId)
         {
             return await _context.Transactions
-                  .Where(t => t.UserId == userId)
+                  .Where(t => t.UserId == userId &&
+                    t.Date >= _inicioMesAtual)
                   .Select(g => new ListaDto
                   {
                       Title = g.Title,

@@ -46,13 +46,25 @@ namespace Orcamento.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public IActionResult GetAll(int? mes = null, int? ano = null)
         {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var userId = int.Parse(
+                User.FindFirst(ClaimTypes.NameIdentifier)!.Value
+            );
 
-            var transactions = _context.Transactions
+            var query = _context.Transactions
                 .Include(t => t.Category)
-                .Where(t => t.UserId == userId)
+                .Where(t => t.UserId == userId);
+
+            // filtro por mês
+            if (mes.HasValue && ano.HasValue)
+            {
+                query = query.Where(t =>
+                    t.Date.Month == mes.Value &&
+                    t.Date.Year == ano.Value);
+            }
+
+            var transactions = query
                 .Select(t => new
                 {
                     t.Id,
