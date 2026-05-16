@@ -60,6 +60,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<DashboardService>();
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<CategoryService>();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
